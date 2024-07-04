@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -48,44 +48,57 @@ namespace FinalProject_Game_
             return hand;
         }
     }
-    public class  WarGame
+    public class WarGame
     {
-        public List<Card> player1;
-        public List<Card> player2;
+        private List<Card> player1Deck;
+        private List<Card> player2Deck;
+
         public WarGame()
         {
-            Deck deck = new Deck(); 
-            player1 = deck.Deal(26);
-            player2 = deck.Deal(26);
+            Deck deck = new Deck();
+            player1Deck = new Queue<Card>(deck.Deal(18));
+            player2Deck = new Queue<Card>(deck.Deal(18));
         }
-        public string PlayRound()
+
+        public (Card, Card, string) PlayRound()
         {
-            if (player1.Count == 0 || player2.Count == 0)
+            if (player1Deck.Count == 0 || player2Deck.Count == 0)
             {
-                return "Game over!";
+                return (null, null, "Game over!");
             }
 
-            Card player1Card = player1[0];
-            Card player2Card = player2[0];
-            player1.RemoveAt(0);
-            player2.RemoveAt(0);
+            Card player1Card = player1Deck.Dequeue();
+            Card player2Card = player2Deck.Dequeue();
+            string result;
 
             if (player1Card.Value > player2Card.Value)
             {
-                player1.Add(player1Card);
-                player2.Add(player2Card);
-                return "Player 1 wins this round!";
+                player1Deck.Enqueue(player1Card);
+                player1Deck.Enqueue(player2Card);
+                result = "Player 1 wins this round!";
             }
             else if (player1Card.Value < player2Card.Value)
             {
-                player2.Add(player1Card);
-                player2.Add(player2Card);
-                return "Player 2 wins this round!";
+                player2Deck.Enqueue(player1Card);
+                player2Deck.Enqueue(player2Card);
+                result = "Player 2 wins this round!";
             }
             else
             {
-                return "War!";
+                result = "War! No winner for this round.";
             }
+
+            return (player1Card, player2Card, result);
+        }
+
+        public int GetPlayer1DeckCount()
+        {
+            return player1Deck.Count;
+        }
+
+        public int GetPlayer2DeckCount()
+        {
+            return player2Deck.Count;
         }
     }
 }
