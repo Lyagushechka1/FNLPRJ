@@ -8,9 +8,9 @@ namespace FinalProject_Game_
 {
     public class Card
     {
-        public int Value { get; set; }  
+        public int Value { get; set; }
         public string Suit { get; set; }
-        public Card(int value, string suit) 
+        public Card(int value, string suit)
         {
             Value = value;
             Suit = suit;
@@ -23,14 +23,14 @@ namespace FinalProject_Game_
     public class Deck
     {
         List<Card> cards = new List<Card>();
-        public Deck() 
-        { 
-            string[] suit = { "Hearts", "Diamonds", "Clubs", "Spades" };
+        public Deck()
+        {
+            string[] suits = { "❤️", "♦️", "♣️", "♠️" };
             for (int i = 0; i <= 13; i++)
             {
-                foreach (string suit2 in suit)
+                foreach (string suit in suits)
                 {
-                    cards.Add(new Card(i, suit2));
+                    cards.Add(new Card(i, suit));
                     Console.WriteLine("Card Edded");
                 }
             }
@@ -56,8 +56,8 @@ namespace FinalProject_Game_
         public WarGame()
         {
             Deck deck = new Deck();
-            player1Deck = new Queue<Card>(deck.Deal(18));
-            player2Deck = new Queue<Card>(deck.Deal(18));
+            player1Deck = new List<Card>(deck.Deal(18));
+            player2Deck = new List<Card>(deck.Deal(18));
         }
 
         public (Card, Card, string) PlayRound()
@@ -67,20 +67,22 @@ namespace FinalProject_Game_
                 return (null, null, "Game over!");
             }
 
-            Card player1Card = player1Deck.Dequeue();
-            Card player2Card = player2Deck.Dequeue();
+            Card player1Card = player1Deck[0];
+            Card player2Card = player2Deck[0];
+            player1Deck.RemoveAt(0);
+            player2Deck.RemoveAt(0);
             string result;
 
             if (player1Card.Value > player2Card.Value)
             {
-                player1Deck.Enqueue(player1Card);
-                player1Deck.Enqueue(player2Card);
+                player1Deck.Add(player1Card);
+                player1Deck.Add(player2Card);
                 result = "Player 1 wins this round!";
             }
             else if (player1Card.Value < player2Card.Value)
             {
-                player2Deck.Enqueue(player1Card);
-                player2Deck.Enqueue(player2Card);
+                player2Deck.Add(player1Card);
+                player2Deck.Add(player2Card);
                 result = "Player 2 wins this round!";
             }
             else
